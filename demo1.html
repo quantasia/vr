@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebXR Experience</title>
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@latest/build/three.module.js';
+        import { XRButton } from 'https://unpkg.com/three@latest/examples/jsm/webxr/XRButton.js';
+
+        let scene, camera, renderer;
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x202020);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 1.6, 3);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.xr.enabled = true;
+            document.body.appendChild(renderer.domElement);
+
+            // VR Button
+            document.body.appendChild(XRButton.createButton(renderer));
+
+            // Lighting
+            const light = new THREE.PointLight(0xffffff, 1, 10);
+            light.position.set(0, 3, 0);
+            scene.add(light);
+
+            // Add Floating Cubes
+            const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+            const material = new THREE.MeshStandardMaterial({ color: 0xff6600 });
+            
+            for (let i = 0; i < 10; i++) {
+                const cube = new THREE.Mesh(geometry, material);
+                cube.position.set(
+                    Math.random() * 4 - 2,
+                    Math.random() * 2 + 1,
+                    Math.random() * -5
+                );
+                scene.add(cube);
+            }
+
+            // Animation Loop
+            function animate() {
+                renderer.setAnimationLoop(() => {
+                    renderer.render(scene, camera);
+                });
+            }
+
+            animate();
+        }
+
+        window.addEventListener('load', init);
+    </script>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+    </style>
+</head>
+<body></body>
+</html>
