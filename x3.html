@@ -9,9 +9,11 @@
 <body>
   <a-scene>
     <a-assets>
-      <!-- Add the sound asset -->
-      <audio id="sound" src="wow.ogg"></audio>
+      <audio id="river" src="wow.ogg"></audio>
     </a-assets>
+   
+    <a-entity sound="src: #river"></a-entity> 
+    
     <!-- Controller -->
     <a-entity
       id="right-hand"
@@ -30,8 +32,6 @@
       ></a-box>
     </a-entity>
 
-    <!-- Sound Entity -->
-    <a-entity id="sound-entity" sound="src: #sound; on: bbuttondown"></a-entity>
 
     <!-- Event Listener for Button Press -->
     <a-entity>
@@ -46,7 +46,6 @@
     <script>
       const rightHand = document.querySelector('#right-hand');
       const squareTemplate = document.querySelector('#square-template');
-      const sound = document.querySelector('#sound');
 
       rightHand.addEventListener('abuttondown', () => {
         // Clone the square template
@@ -70,6 +69,7 @@
 
       // Play sound on B button press
       rightHand.addEventListener('bbuttondown', () => {
+        var sound = document.querySelector('#river');
         sound.components.sound.playSound();
       });
     </script>
