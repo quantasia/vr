@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebXR Bouncing Balls (A-Frame 1.6)</title>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-physics-system@4.0.1/dist/aframe-physics-system.min.js"></script>
+</head>
+<body>
+  <a-scene renderer="colorManagement: true;" xr-mode-ui="XRMode: xr" evice-orientation-permission-ui="enabled: false">
+    <!-- Room -->
+    <a-box
+      static-body
+      position="0 2.5 0"
+      width="10"
+      height="5"
+      depth="10"
+      material="color: #ccc; side: back"
+    ></a-box>
+    <a-plane
+      static-body
+      position="0 0 -5"
+      rotation="-90 0 0"
+      width="10"
+      height="10"
+      material="color: #888"
+    ></a-plane> <!-- Floor -->
+    <a-plane
+      static-body
+      position="0 5 -5"
+      rotation="90 0 0"
+      width="10"
+      height="10"
+      material="color: #888"
+    ></a-plane> <!-- Ceiling -->
+
+    <!-- Balls -->
+    <a-entity id="balls">
+      <!-- 10 balls with random positions and velocities -->
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="-3 1.5 -3"
+        material="color: red"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="3 1.5 -3"
+        material="color: blue"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="-3 1.5 3"
+        material="color: green"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="3 1.5 3"
+        material="color: yellow"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="0 1.5 0"
+        material="color: orange"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="-2 1.5 2"
+        material="color: purple"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="2 1.5 -2"
+        material="color: pink"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="-2 1.5 -2"
+        material="color: cyan"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="2 1.5 2"
+        material="color: magenta"
+      ></a-sphere>
+      <a-sphere
+        class="ball"
+        dynamic-body
+        radius="0.2"
+        position="0 1.5 -4"
+        material="color: lime"
+      ></a-sphere>
+    </a-entity>
+
+    <!-- Player -->
+    <a-entity
+      id="player"
+      movement-controls="speed: 0.1"
+      position="0 1.6 0"
+    >
+      <a-entity
+        camera
+        look-controls
+      ></a-entity>
+    </a-entity>
+
+    <!-- Lighting -->
+    <a-entity
+      light="type: directional; color: #fff; intensity: 1"
+      position="5 5 5"
+    ></a-entity>
+    <a-entity
+      light="type: ambient; color: #404040"
+    ></a-entity>
+  </a-scene>
+
+  <script>
+    // Add random velocities to the balls
+    document.querySelectorAll('.ball').forEach(ball => {
+      const velocity = {
+        x: (Math.random() - 0.5) * 0.1,
+        y: (Math.random() - 0.5) * 0.1,
+        z: (Math.random() - 0.5) * 0.1
+      };
+      ball.setAttribute('velocity', velocity);
+    });
+  </script>
+</body>
+</html>
