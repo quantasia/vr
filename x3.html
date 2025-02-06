@@ -12,7 +12,7 @@
       <audio id="river" src="wow.ogg"></audio>
     </a-assets>
    
-    <a-entity sound="src: #river"></a-entity> 
+    <a-entity sound="src: #river" autoplay: true></a-entity> 
     
     <!-- Controller -->
     <a-entity
@@ -72,6 +72,18 @@
         var enti = document.querySelector('#river');
         enti.components.sound.playSound();
       });
+
+      // Create a green box on trigger button press
+      rightHand.addEventListener('triggerdown', () => {
+        const box = document.createElement('a-box');
+        box.setAttribute('color', 'green');
+        box.setAttribute('position', '0 0 -1'); // Position in front of the controller
+        box.setAttribute('width', '0.5');
+        box.setAttribute('height', '0.5');
+        box.setAttribute('depth', '0.5');
+        rightHand.appendChild(box);
+      });
+
     </script>
   </a-scene>
 </body>
