@@ -11,8 +11,6 @@
       
       <a-assets>
         
-        <img id="testTex" src="test.png">
-        
         <a-mixin id="floorMat" material="color:#BBB"></a-mixin>
         
         <img crossorigin="anonymous" id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
@@ -103,13 +101,7 @@
 
     <!-- Player -->
     <a-entity
-      id="player"
-      movement-controls="speed: 0.1"
-      position="0 1.6 0"
-    >
-    </a-entity>
-
-<a-entity camera look-controls wasd-controls="acceleration:100" position="0 1.6 0"></a-entity>
+      id="player" camera look-controls wasd-controls="acceleration:100" position="0 1.6 0"></a-entity>
 
     <!-- Controller -->
     <a-entity
