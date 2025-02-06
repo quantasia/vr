@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quest 3 Button Press Example</title>
+  <script src="aframe-master.js"></script>
+</head>
+<body>
+  <a-scene>
+    <!-- Controller -->
+    <a-entity
+      id="right-hand"
+      hand-controls="hand: right"
+      oculus-touch-controls="hand: right"
+    ></a-entity>
+
+    <!-- Square Template (hidden initially) -->
+    <a-entity id="square-template" visible="false">
+      <a-box
+        position="0 0 -1"
+        width="0.5"
+        height="0.5"
+        depth="0.5"
+        color="red"
+      ></a-box>
+    </a-entity>
+
+    <!-- Event Listener for Button Press -->
+    <a-entity>
+      <a-animation
+        id="button-press-animation"
+        attribute="visible"
+        begin="button-press"
+        from="false"
+        to="true"
+      ></a-animation>
+    </a-entity>
+
+    <!-- Script to Handle Button Press -->
+    <script>
+      const rightHand = document.querySelector('#right-hand');
+      const squareTemplate = document.querySelector('#square-template');
+
+      rightHand.addEventListener('abuttondown', () => {
+        // Clone the square template
+        const square = squareTemplate.cloneNode(true);
+        square.setAttribute('visible', true);
+
+        // Position the square in front of the controller
+        const controllerPosition = rightHand.getAttribute('position');
+        const controllerRotation = rightHand.getAttribute('rotation');
+        square.setAttribute('position', {
+          x: controllerPosition.x,
+          y: controllerPosition.y,
+          z: controllerPosition.z - 1
+        });
+        square.setAttribute('rotation', controllerRotation);
+
+        // Add the square to the scene
+        square.removeAttribute('id'); // Remove the template ID
+        document.querySelector('a-scene').appendChild(square);
+      });
+    </script>
+  </a-scene>
+</body>
+</html>
