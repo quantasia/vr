@@ -12,7 +12,7 @@
       <audio id="river" src="wow.ogg"></audio>
     </a-assets>
    
-    <a-entity sound="src: #river" autoplay: true></a-entity> 
+    <a-entity id="riverSound" sound="src: #river"></a-entity> 
     
     <!-- Controller -->
     <a-entity
@@ -69,20 +69,30 @@
 
       // Play sound on B button press
       rightHand.addEventListener('bbuttondown', () => {
-        var enti = document.querySelector('#river');
+        var enti = document.querySelector('#riverSound');
         enti.components.sound.playSound();
       });
 
       // Create a green box on trigger button press
       rightHand.addEventListener('triggerdown', () => {
-        const box = document.createElement('a-box');
-        box.setAttribute('color', 'green');
-        box.setAttribute('position', '0 0 -1'); // Position in front of the controller
-        box.setAttribute('width', '0.5');
-        box.setAttribute('height', '0.5');
-        box.setAttribute('depth', '0.5');
-        rightHand.appendChild(box);
-      });
+         // Clone the square template
+        const square = squareTemplate.cloneNode(true);
+        square.setAttribute('visible', true);
+
+        // Position the square in front of the controller
+        const controllerPosition = rightHand.getAttribute('position');
+        const controllerRotation = rightHand.getAttribute('rotation');
+        square.setAttribute('position', {
+          x: controllerPosition.x,
+          y: controllerPosition.y,
+          z: controllerPosition.z - 1
+        });
+        square.setAttribute('rotation', controllerRotation);
+
+        // Add the square to the scene
+        square.removeAttribute('id'); // Remove the template ID
+        document.querySelector('a-scene').appendChild(square);
+});
 
     </script>
   </a-scene>
