@@ -8,6 +8,10 @@
 </head>
 <body>
   <a-scene>
+    <a-assets>
+      <!-- Add the sound asset -->
+      <audio id="sound" src="wow.ogg"></audio>
+    </a-assets>
     <!-- Controller -->
     <a-entity
       id="right-hand"
@@ -36,11 +40,10 @@
         to="true"
       ></a-animation>
     </a-entity>
-
-    <!-- Script to Handle Button Press -->
     <script>
       const rightHand = document.querySelector('#right-hand');
       const squareTemplate = document.querySelector('#square-template');
+      const sound = document.querySelector('#sound');
 
       rightHand.addEventListener('abuttondown', () => {
         // Clone the square template
@@ -60,6 +63,11 @@
         // Add the square to the scene
         square.removeAttribute('id'); // Remove the template ID
         document.querySelector('a-scene').appendChild(square);
+      });
+
+      // Play sound on B button press
+      rightHand.addEventListener('bbuttondown', () => {
+        sound.components.sound.playSound();
       });
     </script>
   </a-scene>
