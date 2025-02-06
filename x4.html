@@ -52,7 +52,11 @@
         square.setAttribute('visible', true);
 
         // Set the color of the box
-        square.setAttribute('color', color);
+        // square.setAttribute('color', color);
+
+        // Find the <a-box> child inside the cloned template
+        const box = square.querySelector('a-box');
+        box.setAttribute('color', color);
 
         // Position the square in front of the controller
         const controllerPosition = rightHand.getAttribute('position');
