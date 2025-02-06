@@ -111,18 +111,19 @@
       ></a-entity>
     </a-entity>
 
-
     <!-- Player -->
     <a-entity
       id="player"
       movement-controls="speed: 0.1"
       position="0 1.6 0"
     >
-      <a-entity
-        camera
-        look-controls
-      ></a-entity>
     </a-entity>
+   
+ <!-- Right Controller -->
+              <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true"></a-entity>
+ 
+    <a-entity camera look-controls wasd-controls="acceleration:100" position="0 1.6 0"></a-entity>
+
       
       <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048" segments-height="5" segments-width="8"></a-sky>
       <a-plane src="#groundTexture" rotation="-90 0 0" position="0 -0.01 0" height="100" width="100"></a-plane>
