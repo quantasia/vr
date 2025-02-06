@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A-Frame Infinite Rain Simulation</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+</head>
+<body>
+  <a-scene>
+    <!-- Sky -->
+    <a-sky color="#222222"></a-sky>
+
+    <!-- Ground -->
+    <a-plane
+      position="0 0 0"
+      rotation="-90 0 0"
+      width="100"
+      height="100"
+      color="#333333"
+    ></a-plane>
+
+    <!-- Raindrops -->
+    <a-entity id="rain-container">
+      <!-- Raindrops will be dynamically added here -->
+    </a-entity>
+
+    <!-- Script to Create Infinite Rain -->
+    <script>
+      const rainContainer = document.querySelector('#rain-container');
+      const numRaindrops = 500; // Number of raindrops
+      const rainHeight = 20; // Height from which raindrops fall
+      const rainSpeed = 0.1; // Speed of raindrops
+
+      // Function to create a single raindrop
+      function createRaindrop() {
+        const raindrop = document.createElement('a-entity');
+        raindrop.setAttribute('geometry', {
+          primitive: 'cylinder',
+          radius: 0.02,
+          height: 0.5,
+        });
+        raindrop.setAttribute('material', {
+          color: '#00BFFF',
+          shader: 'flat',
+        });
+        raindrop.setAttribute('position', {
+          x: (Math.random() - 0.5) * 50, // Random X position
+          y: rainHeight, // Start at the top
+          z: (Math.random() - 0.5) * 50, // Random Z position
+        });
+        rainContainer.appendChild(raindrop);
+        return raindrop;
+      }
+
+      // Create initial raindrops
+      const raindrops = [];
+      for (let i = 0; i < numRaindrops; i++) {
+        raindrops.push(createRaindrop());
+      }
+
+      // Animation loop to make raindrops fall
+      setInterval(() => {
+        raindrops.forEach((raindrop, index) => {
+          const position = raindrop.getAttribute('position');
+          position.y -= rainSpeed; // Move raindrop downward
+
+          if (position.y < 0) {
+            // Remove the raindrop when it hits the ground
+            rainContainer.removeChild(raindrop);
+            raindrops.splice(index, 1); // Remove from the array
+
+            // Create a new raindrop at the top
+            const newRaindrop = createRaindrop();
+            raindrops.push(newRaindrop);
+          } else {
+            raindrop.setAttribute('position', position);
+          }
+        });
+      }, 16); // ~60 FPS
+    </script>
+  </a-scene>
+</body>
+</html>
