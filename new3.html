@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Immersive VR Experience</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script>
+      AFRAME.registerComponent('cursor-listener', {
+        init: function () {
+          this.el.addEventListener('click', function (evt) {
+            console.log('I was clicked!');
+            // You can add custom actions here when an object is clicked.
+          });
+        }
+      });
+
+      AFRAME.registerComponent('rotate-on-hover', {
+        init: function () {
+          this.el.addEventListener('mouseenter', () => {
+            this.el.setAttribute('animation', {
+              property: 'rotation',
+              to: '0 360 0',
+              loop: true,
+              dur: 5000,
+              easing: 'linear'
+            });
+          });
+
+          this.el.addEventListener('mouseleave', () => {
+            this.el.removeAttribute('animation');
+          });
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene background="color: #333333">
+
+      <!-- Asset Management -->
+      <a-assets>
+        <a-asset-item id="artifact" src="object.glb"></a-asset-item>
+        <audio id="backgroundMusic" src="music.mp3" preload="auto"></audio>
+      </a-assets>
+
+      <!-- Ambient Light -->
+      <a-entity light="type: ambient; color: #444"></a-entity>
+
+      <!-- Directional Light -->
+      <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="1 2 1"></a-entity>
+
+      <!-- Room Geometry (Simple Box) -->
+      <a-entity id="room" geometry="primitive: box; width: 10; height: 4; depth: 10"
+                material="color: #224466; side: back"  -- making the faces visible from inside
+                position="0 2 0">
+      </a-entity>
+
+      <!-- The Artifact -->
+      <a-entity gltf-model="#artifact" scale="2 2 2" position="0 1 -3" rotation="0 45 0" cursor-listener rotate-on-hover></a-entity>
+
+      <!-- Play Background Music -->
+      <a-entity sound="src: #backgroundMusic; autoplay: true; loop: true; volume: 0.5"></a-entity>
+
+      <!-- Camera and Controls -->
+      <a-entity id="player" movement-controls="constrainToNavMesh: false" navigator>
+        <a-entity camera look-controls wasd-controls position="0 1.6 0">
+          <a-entity cursor="rayOrigin: mouse" raycaster="far: 10; objects: .clickable" position="0 0 -1"
+                    geometry="primitive: sphere; radius: 0.01" material="color: #FFFFFF; shader: flat"></a-entity>
+        </a-entity>
+      </a-entity>
+
+    </a-scene>
+  </body>
+</html>
