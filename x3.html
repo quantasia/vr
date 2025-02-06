@@ -28,7 +28,7 @@
         width="0.5"
         height="0.5"
         depth="0.5"
-        color="green"
+        color="yellow"
       ></a-box>
     </a-entity>
 
@@ -69,8 +69,8 @@
 
       // Play sound on B button press
       rightHand.addEventListener('bbuttondown', () => {
-        var sound = document.querySelector('#river');
-        sound.components.sound.playSound();
+        var enti = document.querySelector('#river');
+        enti.components.sound.playSound();
       });
     </script>
   </a-scene>
