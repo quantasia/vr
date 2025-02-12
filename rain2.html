@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A-Frame WebXR Rain Experience</title>
+  <!-- Using a recent A-Frame release for improved WebXR support -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+</head>
+<body>
+  <a-scene>
+    <!-- Sky and Ground -->
+    <a-sky color="#222"></a-sky>
+    <a-plane position="0 0 0" rotation="-90 0 0" width="100" height="100" color="#333"></a-plane>
+
+    <!-- Rain Component Definition -->
+    <script>
+      AFRAME.registerComponent('rain', {
+        schema: {
+          dropCount: {type: 'int', default: 200},
+          height: {type: 'number', default: 20},
+          speed: {type: 'number', default: 0.1}
+        },
+        init: function () {
+          this.raindrops = [];
+          const sceneEl = this.el;
+          // Create initial raindrops
+          for (let i = 0; i < this.data.dropCount; i++) {
+            const drop = document.createElement('a-entity');
+            drop.setAttribute('geometry', {
+              primitive: 'cylinder',
+              radius: 0.02,
+              height: 0.5
+            });
+            drop.setAttribute('material', {
+              color: '#00BFFF',
+              shader: 'flat'
+            });
+            drop.setAttribute('position', {
+              x: (Math.random() - 0.5) * 50,
+              y: this.data.height * Math.random(),
+              z: (Math.random() - 0.5) * 50
+            });
+            sceneEl.appendChild(drop);
+            this.raindrops.push(drop);
+          }
+        },
+        tick: function (time, deltaTime) {
+          // Animate raindrops falling down. 
+          this.raindrops.forEach(drop => {
+            const pos = drop.getAttribute('position');
+            pos.y -= this.data.speed * (deltaTime / 16);
+            if (pos.y < 0) {
+              pos.y = this.data.height;
+              pos.x = (Math.random() - 0.5) * 50;
+              pos.z = (Math.random() - 0.5) * 50;
+            }
+            drop.setAttribute('position', pos);
+          });
+        }
+      });
+    </script>
+
+    <!-- Attach Rain Component to an Entity -->
+    <a-entity rain></a-entity>
+
+    <!-- Optional: Enter VR button is provided automatically by A-Frame -->
+  </a-scene>
+</body>
+</html>
