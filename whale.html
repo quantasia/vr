@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital Whale WebXR Experience</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <a-scene>
+    <!-- Sky Background -->
+    <a-sky color="#000"></a-sky>
+    
+    <!-- Sparkling Stars Container -->
+    <a-entity id="stars"></a-entity>
+    
+    <!-- Digital Whale -->
+    <a-entity id="whale" position="-5 1 -3" scale="2 1 1">
+      <!-- Using an elongated sphere to represent a blueish digital whale -->
+      <a-sphere color="#1E90FF" opacity="0.9"></a-sphere>
+      <!-- Swimming animation: horizontal movement -->
+      <a-animation attribute="position" to="5 1 -3" dur="10000" easing="linear" repeat="indefinite" direction="alternate"></a-animation>
+      <!-- Slight rotation animation -->
+      <a-animation attribute="rotation" to="0 20 0" dur="5000" easing="easeInOutSine" repeat="indefinite" direction="alternate"></a-animation>
+    </a-entity>
+    
+    <!-- Script to create sparkling stars -->
+    <script>
+      const scene = document.querySelector('a-scene');
+      const starsContainer = document.querySelector('#stars');
+      // Create 100 stars with random positions and sparkling animation
+      for (let i = 0; i < 100; i++) {
+          const star = document.createElement('a-sphere');
+          star.setAttribute('radius', 0.05);
+          star.setAttribute('color', '#FFF');
+          const x = (Math.random() - 0.5) * 50;
+          const y = Math.random() * 10 + 5;
+          const z = (Math.random() - 0.5) * 50;
+          star.setAttribute('position', { x: x, y: y, z: z });
+          // Sparkling: animate opacity to pulse
+          star.setAttribute('animation', {
+              property: 'material.opacity',
+              from: 0.2,
+              to: 1,
+              dur: 1000 + Math.random() * 1000,
+              loop: true,
+              dir: 'alternate',
+              easing: 'easeInOutSine'
+          });
+          starsContainer.appendChild(star);
+      }
+    </script>
+  </a-scene>
+</body>
+</html>
