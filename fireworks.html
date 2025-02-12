@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exploding Fireworks WebXR Experience</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <a-scene>
+    <!-- Night Sky -->
+    <a-sky color="#000"></a-sky>
+    
+    <!-- Fireworks Experience -->
+    <script>
+      const sceneEl = document.querySelector('a-scene');
+      const startTime = Date.now();
+      const duration = 60000; // 1 minute
+
+      // Spawn fireworks every 3 seconds with increasing intensity.
+      const fireworkInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        if (elapsed > duration) {
+          clearInterval(fireworkInterval);
+          return;
+        }
+        // Particle count increases linearly from 10 to 50.
+        const particleCount = 10 + Math.floor((elapsed / duration) * 40);
+        spawnFirework(particleCount);
+      }, 3000);
+
+      function spawnFirework(particleCount) {
+        // Choose a random explosion position in the sky.
+        const pos = {
+          x: (Math.random() - 0.5) * 20,
+          y: Math.random() * 5 + 3,
+          z: -5 + (Math.random() - 0.5) * 10
+        };
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('a-sphere');
+          particle.setAttribute('radius', 0.1);
+          const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF'];
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          particle.setAttribute('color', color);
+          particle.setAttribute('position', pos);
+          
+          // Random explosion trajectory.
+          const angle = Math.random() * 2 * Math.PI;
+          const speed = Math.random() * 3 + 2;
+          const dx = Math.cos(angle) * speed;
+          const dz = Math.sin(angle) * speed;
+          const dy = Math.random() * 2 + 1;
+          
+          particle.setAttribute('animation__move', {
+            property: 'position',
+            to: `${pos.x + dx} ${pos.y + dy} ${pos.z + dz}`,
+            dur: 2000,
+            easing: 'easeOutQuad'
+          });
+          particle.setAttribute('animation__fade', {
+            property: 'material.opacity',
+            to: 0,
+            dur: 2000,
+            easing: 'linear'
+          });
+          // Remove particle after the animation completes.
+          setTimeout(() => {
+            if (particle.parentNode) {
+              particle.parentNode.removeChild(particle);
+            }
+          }, 2000);
+          sceneEl.appendChild(particle);
+        }
+      }
+    </script>
+  </a-scene>
+</body>
+</html>
