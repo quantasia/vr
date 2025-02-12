@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital Whale4 WebXR Experience</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <a-scene>
+    <!-- Sky Background -->
+    <a-sky color="#000"></a-sky>
+    
+    <!-- Sparkling Stars Container -->
+    <a-entity id="stars"></a-entity>
+    
+    <!-- Digital Whale Entity -->
+    <a-entity id="whale" random-move position="0 3 -8">
+      <!-- Whale Head: Large, domed -->
+      <a-sphere id="whale-head" color="#1E90FF" radius="1.2" position="0 0 0"></a-sphere>
+      
+      <!-- Whale Body: Tapered shape behind head, using non-uniform scale -->
+      <a-sphere id="whale-body" color="#1E90FF" radius="1" position="0 0 -1.2" scale="2 1 1"></a-sphere>
+      
+      <!-- Mouth: Slightly open with breathing animation -->
+      <a-box id="whale-mouth" color="#000" width="1" height="0.2" depth="0.1" position="0 -0.6 0.8">
+        <a-animation attribute="scale" from="1 1 1" to="1 0.7 1" dur="800" easing="easeInOutSine" begin="load" repeat="indefinite" direction="alternate"></a-animation>
+      </a-box>
+      
+      <!-- Eye: Small, blinking (mostly open) -->
+      <a-sphere id="whale-eye" color="#FFF" radius="0.1" position="0.5 0.3 0.9"
+                 animation="property: scale; to: 1 0.2 1; dur:300; delay:4000; loop: true; dir: alternate; easing: easeInOutSine"></a-sphere>
+      
+      <!-- Left Pectoral Fin: Small, angled downward and moving -->
+      <a-box id="left-fin" color="#1E90FF" width="0.3" height="0.8" depth="0.1" position="-1 -0.7 -0.5" rotation="0 0 -30"
+             animation="property: rotation; to: 0 0 -10; dur:1200; dir: alternate; loop: true; easing: easeInOutSine"></a-box>
+      
+      <!-- Right Pectoral Fin: Small, angled downward and moving -->
+      <a-box id="right-fin" color="#1E90FF" width="0.3" height="0.8" depth="0.1" position="1 -0.7 -0.5" rotation="0 0 30"
+             animation="property: rotation; to: 0 0 10; dur:1200; dir: alternate; loop: true; easing: easeInOutSine"></a-box>
+      
+      <!-- Tail: Short, slightly curved with a gentle wave motion -->
+      <a-box id="whale-tail" color="#1E90FF" width="0.6" height="0.2" depth="0.1" position="0 -0.2 -2.2" rotation="0 0 10"
+             animation="property: rotation; to: 0 0 -10; dur:1000; dir: alternate; loop: true; easing: easeInOutSine"></a-box>
+    </a-entity>
+    
+    <!-- Random Movement Component for the Whale -->
+    <script>
+      AFRAME.registerComponent('random-move', {
+        schema: {
+          interval: {type: 'number', default: 4000},
+          range: {type: 'number', default: 10}
+        },
+        init: function () {
+          this.move();
+          this.intervalId = setInterval(this.move.bind(this), this.data.interval);
+        },
+        remove: function () {
+          clearInterval(this.intervalId);
+        },
+        move: function () {
+          var newX = (Math.random() - 0.5) * this.data.range;
+          var newY = Math.random() * 4 + 1;
+          var newZ = (Math.random() - 0.5) * this.data.range - 8;
+          this.el.setAttribute('animation__move', {
+              property: 'position',
+              to: newX + ' ' + newY + ' ' + newZ,
+              dur: 3000,
+              easing: 'easeInOutQuad'
+          });
+        }
+      });
+      
+      // Create Sparkling Stars
+      var sceneEl = document.querySelector('a-scene');
+      var starsContainer = document.querySelector('#stars');
+      for (let i = 0; i < 100; i++) {
+          var star = document.createElement('a-sphere');
+          star.setAttribute('radius', 0.05);
+          star.setAttribute('color', '#FFF');
+          var x = (Math.random() - 0.5) * 50;
+          var y = Math.random() * 10 + 5;
+          var z = (Math.random() - 0.5) * 50;
+          star.setAttribute('position', { x: x, y: y, z: z });
+          star.setAttribute('animation', {
+              property: 'material.opacity',
+              from: 0.2,
+              to: 1,
+              dur: 1000 + Math.random() * 1000,
+              loop: true,
+              dir: 'alternate',
+              easing: 'easeInOutSine'
+          });
+          starsContainer.appendChild(star);
+      }
+    </script>
+  </a-scene>
+</body>
+</html>
