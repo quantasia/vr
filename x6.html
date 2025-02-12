@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A-Frame Left Hand Interaction Experience</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <a-scene>
+    <a-sky id="sky" color="#000"></a-sky>
+    <a-plane position="0 0 0" rotation="-90 0 0" width="100" height="100" color="#333"></a-plane>
+    
+    <!-- Right Hand Controller (optional) -->
+    <a-entity
+      id="right-hand"
+      hand-controls="hand: right"
+      oculus-touch-controls="hand: right"
+    ></a-entity>
+    
+    <!-- Left Hand Controller -->
+    <a-entity
+      id="left-hand"
+      hand-controls="hand: left"
+      oculus-touch-controls="hand: left"
+    ></a-entity>
+    
+    <script>
+      const leftHand = document.querySelector('#left-hand');
+      const sky = document.querySelector('#sky');
+      
+      // Change background to blue when A button is pressed on left hand.
+      function changeBackgroundToBlue() {
+        sky.setAttribute('color', 'blue');
+      }
+      
+      // Change background to black when B button is pressed on left hand.
+      function changeBackgroundToBlack() {
+        sky.setAttribute('color', '#000');
+      }
+      
+      // Show green numbers animation for 3 seconds when trigger is pressed.
+      function showGreenNumbers() {
+        const scene = document.querySelector('a-scene');
+        const numbers = [];
+        const count = 50;
+        for (let i = 0; i < count; i++) {
+          const numberEl = document.createElement('a-text');
+          const randomNumber = Math.floor(Math.random() * 10);
+          numberEl.setAttribute('value', randomNumber);
+          numberEl.setAttribute('color', 'green');
+          numberEl.setAttribute('position', {
+            x: (Math.random() - 0.5) * 10,
+            y: Math.random() * 5 + 1,
+            z: (Math.random() - 0.5) * 10
+          });
+          // Animate the opacity to fade out over 3 seconds.
+          numberEl.setAttribute('opacity', 1);
+          numberEl.setAttribute('animation', {
+            property: 'opacity',
+            to: 0,
+            dur: 3000,
+            easing: 'linear'
+          });
+          scene.appendChild(numberEl);
+          numbers.push(numberEl);
+        }
+        // Remove numbers from scene after 3 seconds.
+        setTimeout(() => {
+          numbers.forEach(el => {
+            if (el.parentNode) {
+              el.parentNode.removeChild(el);
+            }
+          });
+        }, 3000);
+      }
+      
+      leftHand.addEventListener('abuttondown', changeBackgroundToBlue);
+      leftHand.addEventListener('bbuttondown', changeBackgroundToBlack);
+      leftHand.addEventListener('triggerdown', showGreenNumbers);
+    </script>
+  </a-scene>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quest 3 Button Press Example - x6</title>
+  <script src="aframe-master.js"></script>
+</head>
+<body>
+  <a-scene>
+    <a-assets>
+      <audio id="river" src="wow.ogg"></audio>
+    </a-assets>
+    
+    <a-entity id="riverSound" sound="src: #river"></a-entity>
+    
+    <!-- Sky / Background Element -->
+    <a-sky id="sky" color="#000"></a-sky>
+    
+    <!-- Right Hand Controller -->
+    <a-entity
+      id="right-hand"
+      hand-controls="hand: right"
+      oculus-touch-controls="hand: right">
+    </a-entity>
+    
+    <!-- Left Hand Controller -->
+    <a-entity
+      id="left-hand"
+      hand-controls="hand: left"
+      oculus-touch-controls="hand: left">
+    </a-entity>
+    
+    <!-- Square Template (hidden initially) -->
+    <a-entity id="square-template" visible="false">
+      <a-box position="0 0 -1" width="0.5" height="0.5" depth="0.5" color="yellow"></a-box>
+    </a-entity>
+    
+    <!-- Event Listener for Button Press -->
+    <a-entity>
+      <a-animation id="button-press-animation" attribute="visible" begin="button-press" from="false" to="true"></a-animation>
+    </a-entity>
+    
+    <script>
+      const rightHand = document.querySelector('#right-hand');
+      const leftHand = document.querySelector('#left-hand');
+      const sky = document.querySelector('#sky');
+      const squareTemplate = document.querySelector('#square-template');
+
+      // FUNCTIONS USED FOR RIGHT-HAND EVENTS (based on x5.html)
+      function createBox(color) {
+        // Clone the square template
+        const square = squareTemplate.cloneNode(true);
+        square.setAttribute('visible', true);
+
+        // Find the <a-box> child inside the cloned template and set its color
+        const box = square.querySelector('a-box');
+        box.setAttribute('color', color);
+
+        // Position the square in front of the right-hand controller
+        const controllerPosition = rightHand.getAttribute('position');
+        const controllerRotation = rightHand.getAttribute('rotation');
+        square.setAttribute('position', {
+          x: controllerPosition.x,
+          y: controllerPosition.y,
+          z: controllerPosition.z - 1
+        });
+        square.setAttribute('rotation', controllerRotation);
+
+        // Add the square to the scene
+        square.removeAttribute('id'); // Remove the template ID
+        document.querySelector('a-scene').appendChild(square);
+      }
+
+      function createBall(color) {
+        // Clone the square template (acts as a base container)
+        const ball = squareTemplate.cloneNode(true);
+        ball.setAttribute('visible', true);
+
+        // Replace the <a-box> in the template with a <a-sphere>
+        const box = ball.querySelector('a-box');
+        const sphere = document.createElement('a-sphere');
+        sphere.setAttribute('radius', 0.25);
+        sphere.setAttribute('color', color);
+        ball.replaceChild(sphere, box);
+
+        // Position the ball in front of the right-hand controller
+        const controllerPosition = rightHand.getAttribute('position');
+        const controllerRotation = rightHand.getAttribute('rotation');
+        ball.setAttribute('position', {
+          x: controllerPosition.x,
+          y: controllerPosition.y,
+          z: controllerPosition.z - 1
+        });
+        ball.setAttribute('rotation', controllerRotation);
+
+        ball.removeAttribute('id'); // Remove the template ID
+        document.querySelector('a-scene').appendChild(ball);
+      }
+
+      function createFallingParticles() {
+        const scene = document.querySelector('a-scene');
+        const particles = [];
+        const particleCount = 20;
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('a-sphere');
+          particle.setAttribute('radius', 0.1);
+          particle.setAttribute('color', '#FFF');
+          const x = Math.random() * 4 - 2;
+          const z = Math.random() * 4 - 2;
+          particle.setAttribute('position', { x: x, y: 5, z: z });
+          particle.setAttribute('animation', `property: position; to: ${x} 0 ${z}; dur: 5000; easing: linear;`);
+          scene.appendChild(particle);
+          particles.push(particle);
+        }
+        // Remove particles after 5 seconds
+        setTimeout(() => {
+          particles.forEach(particle => particle.parentNode.removeChild(particle));
+        }, 5000);
+      }
+
+      // RIGHT-HAND EVENT LISTENERS
+      rightHand.addEventListener('abuttondown', () => {
+         createBall('blue');
+      });
+
+      rightHand.addEventListener('bbuttondown', () => {
+        var enti = document.querySelector('#riverSound');
+        enti.components.sound.playSound();
+      });
+
+      rightHand.addEventListener('axismove', () => {
+         createFallingParticles();
+      });
+
+      rightHand.addEventListener('triggerdown', () => {
+        createBox('green');
+      });
+
+      rightHand.addEventListener('gripdown', () => {
+        createBox('blue');
+      });
+
+      // LEFT-HAND EVENT LISTENERS
+      leftHand.addEventListener('abuttondown', () => {
+         // Change the background to blue
+         sky.setAttribute('color', 'blue');
+      });
+
+      leftHand.addEventListener('bbuttondown', () => {
+         // Change the background back to black
+         sky.setAttribute('color', '#000');
+      });
+
+      leftHand.addEventListener('triggerdown', () => {
+         // Create a green numbers animation for 3 seconds
+         const scene = document.querySelector('a-scene');
+         const numbers = [];
+         const count = 50;
+         for (let i = 0; i < count; i++) {
+           const numberEl = document.createElement('a-text');
+           const randomNumber = Math.floor(Math.random() * 10);
+           numberEl.setAttribute('value', randomNumber);
+           numberEl.setAttribute('color', 'green');
+           numberEl.setAttribute('position', {
+             x: (Math.random() - 0.5) * 10,
+             y: Math.random() * 5 + 1,
+             z: (Math.random() - 0.5) * 10
+           });
+           numberEl.setAttribute('opacity', 1);
+           numberEl.setAttribute('animation', {
+             property: 'opacity',
+             to: 0,
+             dur: 3000,
+             easing: 'linear'
+           });
+           scene.appendChild(numberEl);
+           numbers.push(numberEl);
+         }
+         // Remove the green numbers after 3 seconds
+         setTimeout(() => {
+           numbers.forEach(el => {
+             if (el.parentNode) {
+               el.parentNode.removeChild(el);
+             }
+           });
+         }, 3000);
+      });
+    </script>
+  </a-scene>
+</body>
+</html>
