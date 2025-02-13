@@ -156,17 +156,18 @@
       // LEFT-HAND EVENT LISTENERS
 
       // Change background to blue when left-hand A button is pressed
-      leftHand.addEventListener('abuttondown', () => {
+      leftHand.addEventListener('xbuttondown', () => {
          createBox('white');        
 //         const sky = document.querySelector('a-sky');
 //         sky.setAttribute('color', 'blue');
       });
 
-      /* Change background to black when left-hand B button is pressed
-      leftHand.addEventListener('bbuttondown', () => {
-         const sky = document.querySelector('a-sky');
-         sky.setAttribute('color', '#000');
-      });*/
+      // Change background to black when left-hand B button is pressed
+      leftHand.addEventListener('ybuttondown', () => {
+         createBox('yellow');        
+       //  const sky = document.querySelector('a-sky');
+       //  sky.setAttribute('color', '#000');
+      });
 
       /* Create green numbers animation for 3 seconds when left-hand trigger is pressed
       leftHand.addEventListener('triggerdown', () => {
