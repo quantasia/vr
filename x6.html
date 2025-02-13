@@ -13,19 +13,21 @@
     </a-assets>
    
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
-    
-    <!-- Controller -->
-    <a-entity
-      id="right-hand"
-      hand-controls="hand: right"
-      oculus-touch-controls="hand: right"
-    ></a-entity>
-    <!-- Left Hand Controller -->
-    <a-entity
-      id="left-hand"
-      hand-controls="hand: left"
-      oculus-touch-controls="hand: left"
-    ></a-entity>
+   
+    <a-entity id="player"> 
+        <!-- Controller -->
+        <a-entity
+          id="right-hand"
+          hand-controls="hand: right"
+          oculus-touch-controls="hand: right"
+        ></a-entity>
+        <!-- Left Hand Controller -->
+        <a-entity
+          id="left-hand"
+          hand-controls="hand: left"
+          oculus-touch-controls="hand: left"
+        ></a-entity>
+    </a-entity>
 
     <!-- Square Template (hidden initially) -->
     <a-entity id="square-template" visible="false">
