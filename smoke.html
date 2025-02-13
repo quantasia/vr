@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>A-Frame WebXR Smoke Demo</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Camera -->
+      <a-entity camera look-controls position="0 1.6 5"></a-entity>
+      
+      <!-- Smoke effect using a particle system -->
+      <a-entity particle-system="preset: dust; color: #555; particleCount: 2000; size: 2; texture: https://cdn.aframe.io/a-painter/images/smoke.png; opacity: 0.5; velocityValue: 0 1 0"></a-entity>
+      
+      <!-- Ground -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
+      
+      <!-- Sky -->
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>
