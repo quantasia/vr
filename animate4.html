@@ -13,6 +13,10 @@
       <audio id="river" src="assets/wow.ogg"></audio>
       <a-asset-item id="kick" src="assets/scene.gltf"></a-asset-item>
     </a-assets>
+
+<a-entity rotation="0 0 0" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+        <a-sphere position="5 0 0" color="mediumseagreen"></a-sphere>
+</a-entity>
   
     <a-entity id="my-entity" position="0 0 1" gltf-model="#kick" animation-mixer random-walk="speed: 2"></a-entity> 
 <!--    <a-entity scale="0.1 0.1 0.1" position="0 1 -2.5" animation-mixer="clip: *" fbx-model="src: url(https://mannymeadows.github.io/Noosa/models/FBX-DEMO.fbx);"></a-entity> -->
