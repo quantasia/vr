@@ -14,13 +14,14 @@
       <a-asset-item id="kick" src="assets/scene.gltf"></a-asset-item>
     </a-assets>
 
-   <a-entity camera look-controls position="0 1.6 0"></a-entity>
+<!--   <a-entity camera look-controls position="0 1.6 0"></a-entity>
 <a-entity rotation="0 0 0" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
         <a-sphere position="5 0 0" color="mediumseagreen"></a-sphere>
-</a-entity>
+</a-entity>-->
 
   
-   <!-- <a-entity id="my-entity" rotation="0 0 0" gltf-model="#kick" animation-mixer animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"></a-entity> -->
+    <a-entity id="my-entity" gltf-model="#kick" animation-mixer
+     animation-move='path: [ {"position": {"x": 15.020, "y": 15.500, "z": 7.958}}, {"position": {"x": 10, "y": 17.000, "z": 5}} ]; animationStepTime: 1500' rotation="0 0 0"></a-entity>
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
     
     <!-- Controller -->
@@ -64,23 +65,124 @@
       const leftHand = document.querySelector('#left-hand');
       const squareTemplate = document.querySelector('#square-template');
 
-      AFRAME.registerComponent('random-walk', {
-        schema: {
-          speed: { type: 'number', default: 1 }
+AFRAME.registerComponent('animation-move', {
+  schema: {
+    path: {
+      default: [],
+      parse: function (value) {
+        return JSON.parse(value);
+      }
     },
-    init: function () {
-        this.lastMoveTime = 0; // Track the last time the entity moved
-    },
-    tick: function (time, timeDelta) {
-        // Check if enough time has passed
-        var stepX = (Math.random() - 0.5) * this.data.speed;
-        var stepZ = (Math.random() - 0.5) * this.data.speed;
-        var pos = this.el.getAttribute('position');
-        pos.x += stepX;
-        pos.z += stepZ;
-        this.el.setAttribute('position', pos);
+    animationStepTime: {
+      type: 'int',
+      default: 0
+    }
+  },
+  init: function(){
+    this.next = 0;
+    let object = this.el;
+    for (let prop in this.data.path[this.next]) {
+      object.setAttribute( prop, this.data.path[this.next][prop] );
+    }
+  },
+  tick: function (time, timeDelta) {
+    let updated = false
+
+    if ( this.next >= this.data.path.length ) {
+      this.next = 0;
+    }
+
+    let delta = this.data.animationStepTime / (16.7 * ((this.data.animationStepTime+timeDelta)/this.data.animationStepTime));
+    let object = this.el;
+
+    for (let prop in this.data.path[this.next]) {
+
+      let attr = object.getAttribute(prop);
+      let nextStep = this.data.path[this.next][prop];
+
+      let xDelta = Math.abs( (this.next-1 >= 0) ? nextStep.x - this.data.path[this.next-1][prop].x : nextStep.x - this.data.path[this.data.path.length-1][prop].x)/delta;
+      let yDelta = Math.abs( (this.next-1 >= 0) ? nextStep.y - this.data.path[this.next-1][prop].y : nextStep.y - this.data.path[this.data.path.length-1][prop].y)/delta;
+      let zDelta = Math.abs( (this.next-1 >= 0) ? nextStep.z - this.data.path[this.next-1][prop].z : nextStep.z - this.data.path[this.data.path.length-1][prop].z)/delta;
+
+      if (attr.x != nextStep.x) {
+        if ((this.next-1 >= 0 && nextStep.x < this.data.path[this.next-1][prop].x) || (this.next == 0 && nextStep.x < this.data.path[this.data.path.length-1][prop].x)) {
+          if (attr.x-xDelta < nextStep.x) {
+            attr.x = nextStep.x;
+          }
+          else {
+            attr.x -= xDelta;
+            updated = true;
+          }
         }
-      });
+        else if (this.next-1 >= 0 && nextStep.x > this.data.path[this.next-1][prop].x || (this.next == 0 && nextStep.x > this.data.path[this.data.path.length-1][prop].x)) {
+          if (attr.x+xDelta > nextStep.x) {
+            attr.x = nextStep.x;
+          }
+          else {
+            attr.x += xDelta;
+            updated = true;
+          }
+        }
+        else {
+          attr.x = nextStep.x;
+        }
+      }
+
+      if (attr.y != nextStep.y) {
+        if (this.next-1 >= 0 && nextStep.y < this.data.path[this.next-1][prop].y || (this.next == 0 && nextStep.y < this.data.path[this.data.path.length-1][prop].y)) {
+          if (attr.y-yDelta < nextStep.y) {
+            attr.y = nextStep.y;
+          }
+          else {
+            attr.y -= yDelta;
+            updated = true;
+          }
+        }
+        else if (this.next-1 >= 0 && nextStep.y > this.data.path[this.next-1][prop].y || (this.next == 0 && nextStep.y > this.data.path[this.data.path.length-1][prop].y)) {
+          if (attr.y+yDelta > nextStep.y) {
+            attr.y = nextStep.y;
+          }
+          else {
+            attr.y += yDelta;
+            updated = true;
+          }
+        }
+        else {
+          attr.y = nextStep.y;
+        }
+      }
+
+      if (attr.z != nextStep.z) {
+        if (this.next-1 >= 0 && nextStep.z < this.data.path[this.next-1][prop].z || (this.next == 0 && nextStep.z < this.data.path[this.data.path.length-1][prop].z)) {
+          if (attr.z-zDelta < nextStep.z) {
+            attr.z = nextStep.z;
+          }
+          else {
+            attr.z -= zDelta;
+            updated = true;
+          }
+        }
+        else if (this.next-1 >= 0 && nextStep.z > this.data.path[this.next-1][prop].z || (this.next == 0 && nextStep.z > this.data.path[this.data.path.length-1][prop].z)) {
+          if (attr.z+zDelta > nextStep.z) {
+            attr.z = nextStep.z;
+          }
+          else {
+            attr.z += zDelta;
+            updated = true;
+          }
+        }
+        else {
+          attr.z = nextStep.z;
+        }
+      }
+
+      object.setAttribute( prop, attr.x+' '+attr.y+' '+attr.z );
+    }
+    if (!updated) {
+      this.next++;
+    }
+  }
+});
 
 
       // Function to create and position a box
