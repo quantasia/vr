@@ -14,7 +14,7 @@
       <a-asset-item id="kick" src="assets/scene.gltf"></a-asset-item>
     </a-assets>
   
-    <a-entity id="my-entity" gltf-model="#kick" animation-mixer animation__move="property: position; to: 1 1 1; dur: 1000; easing: linear; loop: false"></a-entity> 
+    <a-entity id="my-entity" gltf-model="#kick" animation-mixer random-walk="speed: 2"></a-entity> 
 <!--    <a-entity scale="0.1 0.1 0.1" position="0 1 -2.5" animation-mixer="clip: *" fbx-model="src: url(https://mannymeadows.github.io/Noosa/models/FBX-DEMO.fbx);"></a-entity> -->
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
     
@@ -59,25 +59,21 @@
       const leftHand = document.querySelector('#left-hand');
       const squareTemplate = document.querySelector('#square-template');
 
-      let entity = document.getElementById('my-entity');
-      let animation = entity.components['animation__move'];
-      let currentPosition = new THREE.Vector3(0, 0, 0); // Start position
-
-      animation.on('animationend', () => {
-        // Calculate a new random target position
-        let randomX = currentPosition.x + (Math.random() - 0.5) * 2; // Adjust the '2' to control step size
-        let randomY = currentPosition.y; // Keep Y constant, adjust if needed
-        let randomZ = currentPosition.z + (Math.random() - 0.5) * 2; // Adjust the '2' to control step size
-
-        // Update the animation's target position
-        animation.data.to = `${randomX} ${randomY} ${randomZ}`;
-
-        // Update current position for the next step
-        currentPosition.set(randomX, randomY, randomZ);
-
-        // Restart the animation
-        animation.start();
+      AFRAME.registerComponent('random-walk', {
+        schema: {
+          speed: { type: 'number', default: 1 }
+        },
+        tick: function (time, timeDelta) {
+          var deltaSeconds = timeDelta / 1000;
+          var stepX = (Math.random() - 0.5) * this.data.speed * deltaSeconds;
+          var stepZ = (Math.random() - 0.5) * this.data.speed * deltaSeconds;
+          var pos = this.el.getAttribute('position');
+          pos.x += stepX;
+          pos.z += stepZ;
+          this.el.setAttribute('position', pos);
+        }
       });
+
 
       // Function to create and position a box
       function createBox(color) {
