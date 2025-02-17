@@ -62,15 +62,23 @@
       AFRAME.registerComponent('random-walk', {
         schema: {
           speed: { type: 'number', default: 1 }
-        },
-        tick: function (time, timeDelta) {
-          var deltaSeconds = timeDelta / 1000;
-          var stepX = (Math.random() - 0.5) * this.data.speed * deltaSeconds;
-          var stepZ = (Math.random() - 0.5) * this.data.speed * deltaSeconds;
-          var pos = this.el.getAttribute('position');
-          pos.x += stepX;
-          pos.z += stepZ;
-          this.el.setAttribute('position', pos);
+          interval: { type: 'number', default: 500 } // Time in milliseconds between steps
+    },
+    init: function () {
+        this.lastMoveTime = 0; // Track the last time the entity moved
+    },
+    tick: function (time, timeDelta) {
+        // Check if enough time has passed
+        if (time - this.lastMoveTime < this.data.interval) {
+            return; // Skip movement if interval not reached
+        }
+        this.lastMoveTime = time; // Update last move time
+        var stepX = (Math.random() - 0.5) * this.data.speed;
+        var stepZ = (Math.random() - 0.5) * this.data.speed;
+        var pos = this.el.getAttribute('position');
+        pos.x += stepX;
+        pos.z += stepZ;
+        this.el.setAttribute('position', pos);
         }
       });
 
