@@ -14,7 +14,7 @@
       <a-asset-item id="kick" src="assets/mammoth/scene.gltf"></a-asset-item>
     </a-assets>
   
-    <a-entity id="my-entity" position="0 0 1" gltf-model="#kick" animation-mixer></a-entity> 
+    <a-entity id="my-entity" position="5 0 5" gltf-model="#kick" animation-mixer="clip: IDLE"></a-entity> 
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
     
     <!-- Controller -->
@@ -192,6 +192,20 @@
          }, 3000);
       }
       );
+
+      document.addEventListener("DOMContentLoaded", function () {
+            const entity = document.getElementById("my-entity");
+
+            // Change to "Rise" after 10 seconds
+            setTimeout(() => {
+                entity.setAttribute("animation-mixer", "clip: Rise");
+            }, 10000);
+
+            // Change to "Walk" after 20 seconds
+            setTimeout(() => {
+                entity.setAttribute("animation-mixer", "clip: Walk");
+            }, 20000);
+        });
     </script>
   </a-scene>
 </body>
