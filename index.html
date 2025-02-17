@@ -4,6 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Index</title>
     <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .category {
+            width: 30%;
+        }
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -32,35 +39,55 @@
 </head>
 <body>
     <h1>Welcome to Webxr Demos</h1>
-    <p>Without object demos</p>
-    <ul>
-        <li><a href="demo1.html">Demo 1 (square)</a></li>
-        <li><a href="tower.html">Tower (clone)</a></li>
-        <li><a href="tower2.html">Tower 2 (clone)</a></li>
-        <li><a href="x4.html">x4 room (dark, some interaction)</a></li>
-        <li><a href="x5.html">x5 room (dark, more interaction)</a></li>
-        <li><a href="x6.html">x6 room (broken)</a></li>
-        <li><a href="x7.html">x7 room (dark, even more interaction)</a></li>
-        <li><a href="animate1.html">Animation #1</a></li>
-        <li><a href="animate2.html">Animation #2</a></li>
-        <li><a href="animate3.html">Animation #3</a></li>
-        <li><a href="animate4.html">Animation #4</a></li>
-        <li><a href="animate5.html">Animation #5</a></li>
-        <li><a href="animate6.html">Animation #6 (mammoth)</a></li>
-        <li><a href="rain.html">rain room (new)</a></li>
-        <li><a href="rain2.html">rain2 room (new)</a></li>
-        <li><a href="whale.html">whale demo (new)</a></li>
-        <li><a href="whale2.html">whale2 demo (new)</a></li>
-        <li><a href="whale3.html">whale3 demo (new)</a></li>
-        <li><a href="whale4.html">whale4 demo (new)</a></li>
-        <li><a href="smoke.html">smoke (new)</a></li>
-        <li><a href="fire-smoke.html">fire-smoke (new)</a></li>
-        <li><a href="fireworks.html">fireworks demo (new)</a></li>
-        <li><a href="demo2.html">Demo 2 (square)</a></li>
-        <li><a href="f1.html">F1 (ball)</a></li>
-        <li><a href="r2.html">R2 (ball)</a></li>
-        <li><a href="site3.html">Site 3 (broken)</a></li>
-    </ul>
+
+    <div class="container">
+        <!-- General Demos -->
+        <div class="category">
+            <h3>General Demos</h3>
+            <ul>
+                <li><a href="demo1.html">Demo 1 (square)</a></li>
+                <li><a href="demo2.html">Demo 2 (square)</a></li>
+                <li><a href="tower.html">Tower (clone)</a></li>
+                <li><a href="tower2.html">Tower 2 (clone)</a></li>
+                <li><a href="f1.html">F1 (ball)</a></li>
+                <li><a href="r2.html">R2 (ball)</a></li>
+                <li><a href="site3.html">Site 3 (broken)</a></li>
+            </ul>
+        </div>
+
+        <!-- Animations -->
+        <div class="category">
+            <h3>Animations</h3>
+            <ul>
+                <li><a href="animate1.html">Animation #1</a></li>
+                <li><a href="animate2.html">Animation #2</a></li>
+                <li><a href="animate3.html">Animation #3</a></li>
+                <li><a href="animate4.html">Animation #4</a></li>
+                <li><a href="animate5.html">Animation #5</a></li>
+                <li><a href="animate6.html">Animation #6 (mammoth)</a></li>
+            </ul>
+        </div>
+
+        <!-- Environmental Effects -->
+        <div class="category">
+            <h3>Environmental Effects</h3>
+            <ul>
+                <li><a href="x4.html">x4 room (dark, some interaction)</a></li>
+                <li><a href="x5.html">x5 room (dark, more interaction)</a></li>
+                <li><a href="x6.html">x6 room (broken)</a></li>
+                <li><a href="x7.html">x7 room (dark, even more interaction)</a></li>
+                <li><a href="rain.html">Rain room (new)</a></li>
+                <li><a href="rain2.html">Rain2 room (new)</a></li>
+                <li><a href="whale.html">Whale demo (new)</a></li>
+                <li><a href="whale2.html">Whale2 demo (new)</a></li>
+                <li><a href="whale3.html">Whale3 demo (new)</a></li>
+                <li><a href="whale4.html">Whale4 demo (new)</a></li>
+                <li><a href="smoke.html">Smoke (new)</a></li>
+                <li><a href="fire-smoke.html">Fire-smoke (new)</a></li>
+                <li><a href="fireworks.html">Fireworks demo (new)</a></li>
+            </ul>
+        </div>
+    </div>
     <p>With object demos</p>
     <ul>
         <li><a href="new3.html">a3 </a></li>
