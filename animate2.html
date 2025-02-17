@@ -11,9 +11,10 @@
   <a-scene> 
     <a-assets> 
       <audio id="river" src="assets/wow.ogg"></audio>
+      <a-asset-item id="kick" src="assets/MmaKick.gltf"></a-asset-item>
     </a-assets>
-   
-    <a-entity scale="0.5 0.5 0.5" position="0 1 -2.5" animation-mixer="clip: *" fbx-model="src: url(assets/MmaKick.gltf);"></a-entity>
+  
+    <a-entity gltf-model="#kick" animation-mixer></a-entity> 
 <!--    <a-entity scale="0.1 0.1 0.1" position="0 1 -2.5" animation-mixer="clip: *" fbx-model="src: url(https://mannymeadows.github.io/Noosa/models/FBX-DEMO.fbx);"></a-entity> -->
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
     
@@ -156,7 +157,7 @@
       // Create a blue box on grip button press
       rightHand.addEventListener('gripdown', () => {
         createBox('blue');        
-      }
+      });
 
       leftHand.addEventListener('triggerdown', () => {
          const scene = document.querySelector('a-scene');
