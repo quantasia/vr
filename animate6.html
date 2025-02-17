@@ -14,7 +14,7 @@
       <a-asset-item id="kick" src="assets/mammoth/scene.gltf"></a-asset-item>
     </a-assets>
   
-    <a-entity id="my-entity" position="5 0 5" gltf-model="#kick" animation-mixer="clip: IDLE"></a-entity> 
+    <a-entity id="my-entity" rotation="0 90 0" position="5 0 3" gltf-model="#kick" animation-mixer="clip: IDLE"></a-entity> 
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
     
     <!-- Controller -->
@@ -196,15 +196,18 @@
       document.addEventListener("DOMContentLoaded", function () {
             const entity = document.getElementById("my-entity");
 
-            // Change to "Rise" after 10 seconds
-            setTimeout(() => {
-                entity.setAttribute("animation-mixer", "clip: Rise");
-            }, 10000);
+            // List of animation clips in order
+            const animations = ["Rise", "Walk", "Die", "Die2", "SideSwip", "DeathLoop", "GetUp", "Run"];
+            let index = 0;
 
-            // Change to "Walk" after 20 seconds
-            setTimeout(() => {
-                entity.setAttribute("animation-mixer", "clip: Walk");
-            }, 20000);
+            // Function to update animation every 5 seconds
+            function changeAnimation() {
+                if (index < animations.length) {
+                    entity.setAttribute("animation-mixer", `clip: ${animations[index]}`);
+                    index++;
+                    setTimeout(changeAnimation, 5000); // Call the function again after 5 seconds
+                }
+            }
         });
     </script>
   </a-scene>
