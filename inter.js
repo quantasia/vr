@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.querySelector('a-scene').addEventListener('loaded', function () {
       const rightHand = document.querySelector('#right-hand');
       const leftHand = document.querySelector('#left-hand');
       const squareTemplate = document.querySelector('#square-template');
