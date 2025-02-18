@@ -24,15 +24,18 @@
         let initialCount = 100;
 
         setTimeout(() => {
-          dustEntity.setAttribute("particle-system", "particleCount", initialCount * 2);
-        }, 1000);
-
-        setTimeout(() => {
-          dustEntity.setAttribute("particle-system", "particleCount", initialCount * 3);
+          console.log("Changing animation to: Insity 1 (1000)");
+          dustEntity.setAttribute("particle-system", "particleCount", 1000);
         }, 5000);
 
         setTimeout(() => {
-          dustEntity.setAttribute("particle-system", "particleCount", initialCount * 4);
+          console.log("Changing animation to: Intensity 2 (5000)");
+          dustEntity.setAttribute("particle-system", "particleCount", 5000);
+        }, 10000);
+
+        setTimeout(() => {
+          console.log("Changing animation to: Intensity 3 (20000)");
+          dustEntity.setAttribute("particle-system", "particleCount", 20000);
         }, 15000);
       });
     </script>
