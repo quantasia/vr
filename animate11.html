@@ -28,6 +28,7 @@
     <a-entity
       id="right-hand"
       hand-controls="hand: right"
+      haptics=""
       oculus-touch-controls="hand: right"
     ></a-entity>
 
@@ -184,7 +185,7 @@ setTimeout(() => {
                 entity.setAttribute("animation-mixer", "clip: Walk");
                 var enti = document.querySelector('#mammutSound');
                 enti.components.sound.playSound();
-                rightHand.components.haptics.pulse();
+                rightHand.components.haptics.pulse(1,1);
             }, 10000);
 
             setTimeout(() => {
