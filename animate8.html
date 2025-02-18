@@ -9,7 +9,7 @@
   </head>
   <body>
     <a-scene>
-      <a-entity id='snowy' position="0 2.25 -15" particle-system="preset: snow; particleCount: 10000"></a-entity>
+      <a-entity id='snowy' position="0 2.25 -15" particle-system="preset: snow; particleCount: 10"></a-entity>
 
       <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
       <a-box position="-1 0.5 -3" rotation="0 45 0" width="1" height="1" depth="1"  color="#4CC3D9"></a-box>
@@ -37,6 +37,12 @@
           console.log("Changing animation to: Intensity 3 (20000)");
           dustEntity.setAttribute("particle-system", "particleCount", 20000);
         }, 15000);
+
+        setTimeout(() => {
+          console.log("Changing animation to: Intensity 4 (40000)");
+          dustEntity.setAttribute("particle-system", "particleCount", 40000);
+        }, 20000);
+ 
       });
     </script>
   </body>
