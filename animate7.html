@@ -6,15 +6,16 @@
   <title>Quest 3 Button Press Example</title>
   <script src="aframe-master.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
-  <script src="aframe-rain.min.js"></script>
+  <script src="aframe-particle-system-component.min.js"></script>
 </head>
 <body>
-  <a-scene rain="count:20000; dropHeight: .25; dropRdius: .25; height: 10000; color: black; splash: false"> 
+  <a-scene> 
     <a-assets> 
       <audio id="river" src="assets/wow.ogg"></audio>
       <a-asset-item id="kick" src="assets/mammoth/scene.gltf"></a-asset-item>
     </a-assets>
   
+    <a-entity position="0 2.25 -15" particle-system="preset: snow; particleCount: 5000"></a-entity>
     <a-entity id="my-entity" rotation="0 90 0" position="5 0 3" gltf-model="#kick" animation-mixer="clip: IDLE"></a-entity> 
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
     
