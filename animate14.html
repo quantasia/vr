@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quest 3 Button Press Example</title>
+  <script src="aframe-master.js"></script> <!-- 1.6 -->
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
+   <script src="aframe-particle-system-component.js"></script> 
+</head>
+<body>
+  <a-scene> 
+    <a-assets> 
+      <audio id="river" src="assets/wow.ogg"></audio>
+      <audio id="mammutwalk" src="assets/mammoth/best_walk.wav"></audio>
+      <audio id="mammutbreath" src="assets/mammoth/best_growl.wav"></audio>
+      <audio id="mammutwind" src="assets/mammoth/best_wind.wav"></audio>
+      <a-asset-item id="mammut" src="assets/mammoth/scene.gltf"></a-asset-item>
+      <a-asset-item id="ice" src="assets/icescape/scene.gltf"></a-asset-item>
+    </a-assets>
+ 
+    <a-entity id="snowy" position="0 2.25 -15" particle-system="preset: dust; particleCount: 10000"></a-entity> 
+    <a-entity id="icebackground" rotation="0 0 0" position="0 0 0" gltf-model="#ice"></a-entity> 
+    <a-entity id="my-entity" rotation="0 -35 0" position="-1 0 -5" gltf-model="#mammut" animation-mixer="clip: IDLE"></a-entity> 
+    <a-entity id="riverSound" sound="src: #river"></a-entity> 
+    <a-entity id="mWalk" sound="src: #mammutwalk; volume: 5; rolloffFactor: 2"></a-entity> 
+    <a-entity id="mBreath" sound="src: #mammutbreath; volume: 10; rolloffFactor: 2"></a-entity> 
+    <a-entity id="mWind" sound="src: #mammutwind; volume: 1; rolloffFactor: 2"></a-entity> 
+    
+    <!-- Controller -->
+    <a-entity
+      id="right-hand"
+      hand-controls="hand: right"
+      oculus-touch-controls="hand: right"
+    ></a-entity>
+
+    <!-- Controller -->
+    <a-entity
+      id="left-hand"
+      hand-controls="hand: left"
+      oculus-touch-controls="hand: left"
+    ></a-entity>
+
+    <!-- Square Template (hidden initially) -->
+    <a-entity id="square-template" visible="false">
+      <a-box
+        position="0 0 -1"
+        width="0.5"
+        height="0.5"
+        depth="0.5"
+        color="yellow"
+      ></a-box>
+    </a-entity>
+
+
+    <!-- Event Listener for Button Press -->
+    <a-entity>
+      <a-animation
+        id="button-press-animation"
+        attribute="visible"
+        begin="button-press"
+        from="false"
+        to="true"
+      ></a-animation>
+    </a-entity>
+    <script>
+      const rightHand = document.querySelector('#right-hand');
+      const leftHand = document.querySelector('#left-hand');
+      const squareTemplate = document.querySelector('#square-template');
+
+      // Function to create and position a box
+      function createBox(color) {
+        // Clone the square template
+        const square = squareTemplate.cloneNode(true);
+        square.setAttribute('visible', true);
+
+        // Find the <a-box> child inside the cloned template and set its color
+        const box = square.querySelector('a-box');
+        box.setAttribute('color', color);
+
+        // Position the square in front of the controller
+        const controllerPosition = rightHand.getAttribute('position');
+        const controllerRotation = rightHand.getAttribute('rotation');
+        square.setAttribute('position', {
+          x: controllerPosition.x,
+          y: controllerPosition.y,
+          z: controllerPosition.z - 1
+        });
+        square.setAttribute('rotation', controllerRotation);
+
+        // Add the square to the scene
+        square.removeAttribute('id'); // Remove the template ID
+        document.querySelector('a-scene').appendChild(square);
+      }
+
+      // Function to create and position a ball
+      function createBall(color) {
+        // Clone the square template (acts as a base container)
+        const ball = squareTemplate.cloneNode(true);
+        ball.setAttribute('visible', true);
+
+        // Replace the <a-box> in the template with a <a-sphere>
+        const box = ball.querySelector('a-box');
+        const sphere = document.createElement('a-sphere');
+        sphere.setAttribute('radius', 0.25);
+        sphere.setAttribute('color', color);
+        ball.replaceChild(sphere, box);
+
+        // Position the ball in front of the controller
+        const controllerPosition = rightHand.getAttribute('position');
+        const controllerRotation = rightHand.getAttribute('rotation');
+        ball.setAttribute('position', {
+          x: controllerPosition.x,
+          y: controllerPosition.y,
+          z: controllerPosition.z - 1
+        });
+        ball.setAttribute('rotation', controllerRotation);
+
+        ball.removeAttribute('id'); // Remove the template ID
+        document.querySelector('a-scene').appendChild(ball);
+      }
+
+      // Function to create falling particles from the sky for 5 seconds
+      function createFallingParticles() {
+        const scene = document.querySelector('a-scene');
+        const particles = [];
+        const particleCount = 20;
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('a-sphere');
+          particle.setAttribute('radius', 0.1);
+          particle.setAttribute('color', '#FFF');
+          const x = Math.random() * 4 - 2;
+          const z = Math.random() * 4 - 2;
+          particle.setAttribute('position', { x: x, y: 5, z: z });
+          particle.setAttribute('animation', `property: position; to: ${x} 0 ${z}; dur: 5000; easing: linear;`);
+          scene.appendChild(particle);
+          particles.push(particle);
+        }
+        // Remove particles after 5 seconds
+        setTimeout(() => {
+          particles.forEach(particle => particle.parentNode.removeChild(particle));
+        }, 5000);
+      }
+
+      // Create a blue ball on A button press
+      rightHand.addEventListener('abuttondown', () => {
+         createBall('blue');
+      });
+
+      // Play sound on B button press
+      rightHand.addEventListener('bbuttondown', () => {
+        var enti = document.querySelector('#riverSound');
+        enti.components.sound.playSound();
+      });
+
+      // Create falling particles from the sky for 5 seconds on axis move
+      rightHand.addEventListener('axismove', () => {
+         createFallingParticles();
+      });
+
+      // Create a green box on trigger button press
+      rightHand.addEventListener('triggerdown', () => {
+         let snowEntity = document.querySelector("#snowy");
+         snowEntity.setAttribute("particle-system", "particleCount", 20000);
+      });
+
+      // Create a blue box on grip button press
+      rightHand.addEventListener('gripdown', () => {
+        createBox('blue');        
+      });
+
+      leftHand.addEventListener('triggerdown', () => {
+         let snowEntity = document.querySelector("#snowy");
+         snowEntity.setAttribute("particle-system", "particleCount", 1000);
+      }
+      );
+
+      document.addEventListener("DOMContentLoaded", function () {
+            const entity = document.getElementById("my-entity");
+setTimeout(() => {
+                console.log("Changing animation to: Rise");
+                entity.setAttribute("animation-mixer", "clip: Rise");
+//                var enti = document.querySelector('#mammutSound');
+//                enti.components.sound.playSound();
+            }, 5000);
+
+            setTimeout(() => {
+                console.log("Changing animation to: Walk");
+                entity.setAttribute("animation-mixer", "clip: Walk");
+                entity.setAttribute("animation", "property: position; to: 2 0 -5; dur: 10000; easing: linear; loop: false");
+            }, 10000);
+
+            setTimeout(() => {
+                console.log("Changing animation to: SideSwipe");
+                entity.setAttribute("animation-mixer", "clip: SideSwipe");
+            }, 20000);
+
+            setTimeout(() => {
+                console.log("Changing animation to: Die");
+                entity.setAttribute("animation-mixer", "clip: Die");
+            }, 27500);
+
+            setTimeout(() => {
+                console.log("Changing animation to: Die2");
+                entity.setAttribute("animation-mixer", "clip: Die2");
+            }, 30000);
+
+            setTimeout(() => {
+                console.log("Changing animation to: DeathLoop");
+                entity.setAttribute("animation-mixer", "clip: DeathLoop");
+            }, 32500);
+
+            setTimeout(() => {
+                console.log("Changing animation to: GetUp");
+                entity.setAttribute("animation-mixer", "clip: GetUp");
+            }, 32500);
+
+            setTimeout(() => {
+                console.log("Changing animation to: Run");
+                entity.setAttribute("animation-mixer", "clip: Run");
+                entity.setAttribute("animation", "property: position; to: 25 0 -5; dur: 30000; easing: linear; loop: true");
+            }, 35000);
+
+        });
+    </script>
+  </a-scene>
+</body>
+</html>
