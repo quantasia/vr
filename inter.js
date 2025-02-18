@@ -1,4 +1,5 @@
 document.querySelector('a-scene').addEventListener('loaded', function () {
+      console.log("A-Frame scene loaded! Now running script...");
       const rightHand = document.querySelector('#right-hand');
       const leftHand = document.querySelector('#left-hand');
       const squareTemplate = document.querySelector('#square-template');
