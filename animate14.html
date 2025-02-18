@@ -180,26 +180,25 @@
 setTimeout(() => {
                 console.log("Changing animation to: Rise");
                 entity.setAttribute("animation-mixer", "clip: Rise");
-          var enti = document.querySelector('#mWalk');
-        enti.components.sound.playSound();
-       var enti = document.querySelector('#mBreath');
-        enti.components.sound.playSound();
-       var enti = document.querySelector('#mWind');
-        enti.components.sound.playSound();
-
-//                var enti = document.querySelector('#mammutSound');
-//                enti.components.sound.playSound();
+                var enti = document.querySelector('#mBreath');
+                enti.components.sound.playSound();
+                var enti = document.querySelector('#mWind');
+                enti.components.sound.playSound();
             }, 5000);
 
+
+            var sWalk = document.querySelector('#mWalk');
             setTimeout(() => {
                 console.log("Changing animation to: Walk");
                 entity.setAttribute("animation-mixer", "clip: Walk");
                 entity.setAttribute("animation", "property: position; to: 2 0 -5; dur: 10000; easing: linear; loop: false");
+                sWalk.components.sound.playSound();
             }, 10000);
 
             setTimeout(() => {
                 console.log("Changing animation to: SideSwipe");
                 entity.setAttribute("animation-mixer", "clip: SideSwipe");
+                sWalk.components.sound.pauseSound();
             }, 20000);
 
             setTimeout(() => {
@@ -225,6 +224,7 @@ setTimeout(() => {
             setTimeout(() => {
                 console.log("Changing animation to: Run");
                 entity.setAttribute("animation-mixer", "clip: Run");
+                sWalk.components.sound.playSound();
                 entity.setAttribute("animation", "property: position; to: 25 0 -5; dur: 30000; easing: linear; loop: true");
             }, 35000);
 
