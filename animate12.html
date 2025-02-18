@@ -211,22 +211,22 @@ setTimeout(() => {
                 entity.setAttribute("animation-mixer", "clip: Walk");
                 var enti = document.querySelector('#mammutSound');
                 enti.components.sound.playSound();
-                entity.setAttribute("animation", "property: position; to: 0 0 -9; dur: 5000; easing: linear; loop: false");
+                entity.setAttribute("animation", "property: position; to: 2 0 -5; dur: 10000; easing: linear; loop: false");
             }, 10000);
-
-            setTimeout(() => {
-                console.log("Changing animation to: Die");
-                entity.setAttribute("animation-mixer", "clip: Die");
-            }, 20000);
-
-            setTimeout(() => {
-                console.log("Changing animation to: Die2");
-                entity.setAttribute("animation-mixer", "clip: Die2");
-            }, 25000);
 
             setTimeout(() => {
                 console.log("Changing animation to: SideSwipe");
                 entity.setAttribute("animation-mixer", "clip: SideSwipe");
+            }, 20000);
+
+            setTimeout(() => {
+                console.log("Changing animation to: Die");
+                entity.setAttribute("animation-mixer", "clip: Die");
+            }, 25000);
+
+            setTimeout(() => {
+                console.log("Changing animation to: Die2");
+                entity.setAttribute("animation-mixer", "clip: Die2");
             }, 30000);
 
             setTimeout(() => {
@@ -242,7 +242,8 @@ setTimeout(() => {
             setTimeout(() => {
                 console.log("Changing animation to: Run");
                 entity.setAttribute("animation-mixer", "clip: Run");
-            }, 40000);
+                entity.setAttribute("animation", "property: position; to: 2 0 -7; dur: 10000; easing: linear; loop: true");
+            }, 45000);
 
         });
     </script>
