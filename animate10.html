@@ -19,7 +19,7 @@
  
     <a-entity position="0 2.25 -15" particle-system="preset: dust; particleCount: 10000"></a-entity> 
     <a-entity id="icebackground" rotation="0 0 0" position="0 0 0" gltf-model="#ice"></a-entity> 
-    <a-entity id="my-entity" rotation="0 90 0" position="5 0 3" gltf-model="#mammut" animation-mixer="clip: IDLE"></a-entity> 
+    <a-entity id="my-entity" rotation="0 -35 0" position="0 0 -5" gltf-model="#mammut" animation-mixer="clip: IDLE"></a-entity> 
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
     <a-entity id="mammutSound" sound="src: #mammutsound"></a-entity> 
     
@@ -216,27 +216,27 @@ setTimeout(() => {
             setTimeout(() => {
                 console.log("Changing animation to: Die");
                 entity.setAttribute("animation-mixer", "clip: Die");
-            }, 15000);
+            }, 20000);
 
             setTimeout(() => {
                 console.log("Changing animation to: Die2");
                 entity.setAttribute("animation-mixer", "clip: Die2");
-            }, 20000);
+            }, 25000);
 
             setTimeout(() => {
                 console.log("Changing animation to: SideSwip");
                 entity.setAttribute("animation-mixer", "clip: SideSwip");
-            }, 25000);
+            }, 30000);
 
             setTimeout(() => {
                 console.log("Changing animation to: DeathLoop");
                 entity.setAttribute("animation-mixer", "clip: DeathLoop");
-            }, 30000);
+            }, 35000);
 
             setTimeout(() => {
                 console.log("Changing animation to: GetUp");
                 entity.setAttribute("animation-mixer", "clip: GetUp");
-            }, 35000);
+            }, 40000);
 
             setTimeout(() => {
                 console.log("Changing animation to: Run");
