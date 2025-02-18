@@ -18,5 +18,23 @@
 
       <a-sky color="#000"></a-sky>
     </a-scene>
+   <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let dustEntity = document.querySelector("#dust");
+        let initialCount = 10000;
+
+        setTimeout(() => {
+          dustEntity.setAttribute("particle-system", "particleCount", initialCount * 2);
+        }, 5000);
+
+        setTimeout(() => {
+          dustEntity.setAttribute("particle-system", "particleCount", initialCount * 3);
+        }, 10000);
+
+        setTimeout(() => {
+          dustEntity.setAttribute("particle-system", "particleCount", initialCount * 4);
+        }, 15000);
+      });
+    </script>
   </body>
 </html>
