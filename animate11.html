@@ -141,13 +141,16 @@
 
       // Create a blue ball on A button press
       rightHand.addEventListener('abuttondown', () => {
-         createBall('blue');
+     let snowEntity = document.querySelector("#snowy");
+     snowEntity.setAttribute("particle-system", "preset", 'snow');
       });
 
       // Play sound on B button press
       rightHand.addEventListener('bbuttondown', () => {
         var enti = document.querySelector('#riverSound');
         enti.components.sound.playSound();
+        let snowEntity = document.querySelector("#snowy");
+        snowEntity.setAttribute("particle-system", "preset", 'snow');
       });
 
       // Create falling particles from the sky for 5 seconds on axis move
