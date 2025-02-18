@@ -1,4 +1,4 @@
-document.querySelector('a-scene').addEventListener('loaded', function () {
+document.querySelector('#myScene').addEventListener('loaded', function () {
       console.log("A-Frame scene loaded! Now running script...");
       const rightHand = document.querySelector('#right-hand');
       const leftHand = document.querySelector('#left-hand');
