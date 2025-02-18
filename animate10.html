@@ -12,6 +12,7 @@
   <a-scene> 
     <a-assets> 
       <audio id="river" src="assets/wow.ogg"></audio>
+      <audio id="mammutsound" src="assets/mammoth/walk.wav"></audio>
       <a-asset-item id="mammut" src="assets/mammoth/scene.gltf"></a-asset-item>
       <a-asset-item id="ice" src="assets/icescape/scene.gltf"></a-asset-item>
     </a-assets>
@@ -20,6 +21,7 @@
     <a-entity id="icebackground" rotation="0 0 0" position="0 0 0" gltf-model="#ice"></a-entity> 
     <a-entity id="my-entity" rotation="0 90 0" position="5 0 3" gltf-model="#mammut" animation-mixer="clip: IDLE"></a-entity> 
     <a-entity id="riverSound" sound="src: #river"></a-entity> 
+    <a-entity id="mammutSound" sound="src: #mammutsound"></a-entity> 
     
     <!-- Controller -->
     <a-entity
@@ -207,6 +209,8 @@ setTimeout(() => {
             setTimeout(() => {
                 console.log("Changing animation to: Walk");
                 entity.setAttribute("animation-mixer", "clip: Walk");
+                var enti = document.querySelector('#mammutSound');
+                enti.components.sound.playSound();
             }, 10000);
 
             setTimeout(() => {
