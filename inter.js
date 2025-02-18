@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function () {
       const rightHand = document.querySelector('#right-hand');
       const leftHand = document.querySelector('#left-hand');
       const squareTemplate = document.querySelector('#square-template');
@@ -136,3 +137,4 @@
          }, 3000);
       }
       );
+});
