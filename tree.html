@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>When the Wind Subsides</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script>
+    AFRAME.registerComponent('leaf-shape', {
+      schema: { color: { type: 'color', default: '#b33a32' }, size: { type: 'number', default: 1 } },
+      init: function () {
+        const shape = new THREE.Shape();
+        shape.moveTo(0, -0.5);
+        shape.bezierCurveTo(-0.18, -0.16, -0.22, 0.22, 0, 0.5);
+        shape.bezierCurveTo(0.22, 0.22, 0.18, -0.16, 0, -0.5);
+        const geometry = new THREE.ShapeGeometry(shape, 8);
+        const material = new THREE.MeshStandardMaterial({
+          color: this.data.color,
+          roughness: 0.9,
+          side: THREE.DoubleSide
+        });
+        const leaf = new THREE.Mesh(geometry, material);
+        leaf.scale.setScalar(this.data.size);
+        leaf.castShadow = true;
+        this.el.object3D.add(leaf);
+
+        const veinGeometry = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(0, -0.39, 0.006),
+          new THREE.Vector3(0, 0.37, 0.006)
+        ]);
+        const vein = new THREE.Line(veinGeometry, new THREE.LineBasicMaterial({
+          color: this.data.color === '#b33a32' ? '#7e2925' : '#967522',
+          transparent: true,
+          opacity: 0.55
+        }));
+        vein.scale.setScalar(this.data.size);
+        this.el.object3D.add(vein);
+      }
+    });
+
+    AFRAME.registerComponent('falling-leaf', {
+      schema: {
+        speed: { type: 'number', default: 0.42 },
+        sway: { type: 'number', default: 0.24 },
+        phase: { type: 'number', default: 0 }
+      },
+      init: function () {
+        this.origin = this.el.object3D.position.clone();
+        this.elapsed = this.data.phase;
+        this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        this.motionQuery.addEventListener('change', event => { this.reduceMotion = event.matches; });
+      },
+      tick: function (time, delta) {
+        if (this.reduceMotion) return;
+        this.elapsed += delta / 1000;
+        const travel = (this.elapsed * this.data.speed) % 7.4;
+        const p = this.el.object3D.position;
+        p.y = this.origin.y - travel;
+        p.x = this.origin.x + Math.sin(this.elapsed * 0.7 + this.data.phase) * this.data.sway;
+        p.z = this.origin.z + Math.cos(this.elapsed * 0.55 + this.data.phase) * 0.11;
+        this.el.object3D.rotation.z = Math.sin(this.elapsed * 0.8 + this.data.phase) * 0.48;
+        this.el.object3D.rotation.y = Math.sin(this.elapsed * 0.45 + this.data.phase) * 0.35;
+      }
+    });
+
+    AFRAME.registerComponent('winter-tree', {
+      init: function () {
+        const black = new THREE.MeshStandardMaterial({ color: '#171717', roughness: 0.94 });
+        const up = new THREE.Vector3(0, 1, 0);
+        const addSegment = (from, to, startRadius, endRadius) => {
+          const direction = new THREE.Vector3().subVectors(to, from);
+          const length = direction.length();
+          const mesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(endRadius, startRadius, length, 7, 1), black
+          );
+          mesh.position.copy(from).add(to).multiplyScalar(0.5);
+          mesh.quaternion.setFromUnitVectors(up, direction.normalize());
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+          this.el.object3D.add(mesh);
+        };
+
+        const branch = (start, angle, length, radius, depth, bend = 0) => {
+          const end = new THREE.Vector3(
+            start.x + Math.sin(angle) * length,
+            start.y + Math.cos(angle) * length,
+            start.z + bend
+          );
+          const middle = new THREE.Vector3(
+            start.x + Math.sin(angle + bend * 0.12) * length * 0.52,
+            start.y + Math.cos(angle + bend * 0.12) * length * 0.52,
+            start.z + bend * 0.42
+          );
+          addSegment(start, middle, radius, radius * 0.76);
+          addSegment(middle, end, radius * 0.76, Math.max(0.009, radius * 0.49));
+
+          if (depth > 0) {
+            const spread = depth === 1 ? 0.47 : 0.39;
+            const childLength = length * (depth > 2 ? 0.59 : 0.67);
+            const childRadius = radius * 0.59;
+            branch(end, angle - spread, childLength, childRadius, depth - 1, -bend * 0.45 - 0.04);
+            branch(end, angle + spread, childLength * 0.94, childRadius, depth - 1, bend * 0.42 + 0.04);
+            if (depth >= 2) {
+              const fork = middle.clone().lerp(end, 0.58);
+              branch(fork, angle + (angle < 0 ? -1 : 1) * 0.79, length * 0.53,
+                radius * 0.42, depth - 1, bend * 0.3);
+            }
+          }
+        };
+
+        const trunk = [
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(-0.08, 0.8, 0.02),
+          new THREE.Vector3(0.06, 1.65, 0.04),
+          new THREE.Vector3(0.12, 2.5, 0.02),
+          new THREE.Vector3(0.04, 3.35, -0.02),
+          new THREE.Vector3(0.15, 4.15, -0.04),
+          new THREE.Vector3(0.26, 4.9, -0.06)
+        ];
+        for (let i = 0; i < trunk.length - 1; i++) {
+          const thickness = 0.19 * (1 - i * 0.115);
+          addSegment(trunk[i], trunk[i + 1], thickness, thickness * 0.79);
+        }
+
+        // Flared roots make the base feel grounded; all tree wood shares one ink-black material.
+        for (let i = 0; i < 7; i++) {
+          const angle = (i / 7) * Math.PI * 2;
+          const rootEnd = new THREE.Vector3(Math.cos(angle) * 0.8, -0.09, Math.sin(angle) * 0.43);
+          const rootTip = new THREE.Vector3(Math.cos(angle) * 1.14, -0.2, Math.sin(angle) * 0.62);
+          addSegment(new THREE.Vector3(0, 0.14, 0), rootEnd, 0.12, 0.065);
+          addSegment(rootEnd, rootTip, 0.065, 0.012);
+        }
+
+        // Four pairs of long limbs form an open, spreading crown.
+        const limbs = [
+          { y: 0.65, angle: 1.08, len: 2.05, radius: 0.112, depth: 3 },
+          { y: 0.72, angle: -1.06, len: 2.0, radius: 0.11, depth: 3 },
+          { y: 1.48, angle: 0.91, len: 2.25, radius: 0.098, depth: 3 },
+          { y: 1.55, angle: -0.94, len: 2.18, radius: 0.096, depth: 3 },
+          { y: 2.3, angle: 0.82, len: 1.9, radius: 0.082, depth: 3 },
+          { y: 2.36, angle: -0.83, len: 1.92, radius: 0.08, depth: 3 },
+          { y: 3.12, angle: 0.54, len: 1.4, radius: 0.065, depth: 2 },
+          { y: 3.2, angle: -0.56, len: 1.38, radius: 0.062, depth: 2 }
+        ];
+        for (const limb of limbs) {
+          const start = new THREE.Vector3(limb.angle > 0 ? 0.09 : 0.05, limb.y, 0);
+          branch(start, limb.angle, limb.len, limb.radius, limb.depth, limb.angle * 0.12);
+        }
+        // A few fine upper forks echo the tree's naturally irregular silhouette.
+        branch(new THREE.Vector3(0.11, 3.25, 0), 0.19, 1.45, 0.07, 2, 0.03);
+        branch(new THREE.Vector3(0.16, 3.63, -0.03), -0.26, 1.18, 0.055, 2, -0.03);
+
+        // Leaf clusters sit at branch tips, with open gaps that keep the black structure visible.
+        const clusters = [
+          [-2.12, 1.22, 0.2, 13], [-1.56, 2.03, -0.15, 15], [-0.84, 2.77, 0.1, 13],
+          [0.06, 3.56, 0.05, 16], [0.84, 2.95, -0.15, 14], [1.58, 2.38, 0.2, 15],
+          [2.18, 1.52, -0.1, 14], [-1.55, 3.12, -0.3, 11], [1.6, 3.25, 0.15, 11],
+          [-0.38, 1.78, 0.25, 9], [0.65, 1.82, -0.25, 9]
+        ];
+        const colors = ['#b33a32', '#c14835', '#c59a31', '#d0a73a'];
+        for (const [cx, cy, cz, count] of clusters) {
+          for (let i = 0; i < count; i++) {
+            const leaf = document.createElement('a-entity');
+            const x = cx + (Math.random() + Math.random() - 1) * 0.62;
+            const y = cy + (Math.random() + Math.random() - 1) * 0.48;
+            const z = cz + (Math.random() + Math.random() - 1) * 0.42;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            leaf.setAttribute('position', `${x} ${y} ${z}`);
+            leaf.setAttribute('rotation', `${Math.random() * 70 - 35} ${Math.random() * 80 - 40} ${Math.random() * 360}`);
+            leaf.setAttribute('leaf-shape', `color: ${color}; size: ${0.48 + Math.random() * 0.42}`);
+            this.el.appendChild(leaf);
+          }
+        }
+      }
+    });
+
+    AFRAME.registerComponent('scene-layout', {
+      init: function () {
+        const tree = document.querySelector('#tree');
+        const camera = this.el;
+        const resize = () => {
+          if (window.innerWidth < 650) {
+            tree.setAttribute('position', '0.1 -2.8 -5.8');
+            tree.setAttribute('scale', '0.77 0.77 0.77');
+            camera.setAttribute('position', '0 1.2 10');
+            camera.setAttribute('camera', 'active: true; fov: 49');
+          } else {
+            tree.setAttribute('position', '2.85 -2.05 -5.4');
+            tree.setAttribute('scale', '1 1 1');
+            camera.setAttribute('position', '0 1.5 10');
+            camera.setAttribute('camera', 'active: true; fov: 44');
+          }
+        };
+        resize();
+        window.addEventListener('resize', resize);
+      }
+    });
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: #fff;
+      color: #171717;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a-scene { position: fixed; inset: 0; }
+    .quote {
+      position: fixed;
+      z-index: 2;
+      top: 50%;
+      left: clamp(28px, 8.4vw, 132px);
+      width: min(39vw, 510px);
+      transform: translateY(-53%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      margin: 0 0 24px;
+      color: #82724e;
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 530px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(37px, 5vw, 70px);
+      font-weight: 400;
+      letter-spacing: -.045em;
+      line-height: 1.08;
+    }
+    .period { color: #ad382f; }
+    .rule {
+      width: 44px;
+      height: 1px;
+      margin-top: 28px;
+      background: #b9aa86;
+    }
+    @media (max-width: 650px) {
+      .quote {
+        top: 12vh;
+        left: 8vw;
+        width: 84vw;
+        transform: none;
+      }
+      .eyebrow { margin-bottom: 14px; font-size: 9px; }
+      h1 { max-width: 440px; font-size: clamp(36px, 9vw, 53px); }
+      .rule { margin-top: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="quote" aria-label="A reflection on non-attachment">
+    <p class="eyebrow">A reflection on non-attachment</p>
+    <h1>When the wind<br>subsides, the<br>leaves still fall<span class="period">.</span></h1>
+    <div class="rule" aria-hidden="true"></div>
+  </main>
+
+  <a-scene
+    background="color: #ffffff"
+    renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true"
+    shadow="type: pcfsoft"
+    vr-mode-ui="enabled: false">
+    <a-entity light="type: ambient; color: #ffffff; intensity: 1.25"></a-entity>
+    <a-entity light="type: directional; color: #ffffff; intensity: 1.35; castShadow: true" position="-3 8 5"></a-entity>
+
+    <a-entity id="tree" winter-tree position="2.85 -2.05 -5.4"></a-entity>
+
+    <a-entity id="falling-leaves">
+      <a-entity leaf-shape="color: #b33a32; size: 0.72" falling-leaf="speed: 0.34; sway: 0.2; phase: 0.4" position="1.05 2.45 -2.6" rotation="0 0 26"></a-entity>
+      <a-entity leaf-shape="color: #c59a31; size: 0.82" falling-leaf="speed: 0.29; sway: 0.26; phase: 1.8" position="3.3 1.25 -3.5" rotation="0 0 -18"></a-entity>
+      <a-entity leaf-shape="color: #c14835; size: 0.66" falling-leaf="speed: 0.39; sway: 0.19; phase: 3.2" position="-0.2 3.25 -3.1" rotation="0 0 12"></a-entity>
+      <a-entity leaf-shape="color: #d0a73a; size: 0.76" falling-leaf="speed: 0.32; sway: 0.23; phase: 4.5" position="4.15 3.5 -4.5" rotation="0 0 -34"></a-entity>
+      <a-entity leaf-shape="color: #b33a32; size: 0.7" falling-leaf="speed: 0.36; sway: 0.18; phase: 5.7" position="2.1 0.45 -2.9" rotation="0 0 43"></a-entity>
+      <a-entity leaf-shape="color: #c59a31; size: 0.68" falling-leaf="speed: 0.31; sway: 0.25; phase: 2.6" position="5.1 2.15 -3.8" rotation="0 0 8"></a-entity>
+      <a-entity leaf-shape="color: #c14835; size: 0.8" falling-leaf="speed: 0.35; sway: 0.22; phase: 0.9" position="0.3 1.2 -4.2" rotation="0 0 -27"></a-entity>
+      <a-entity leaf-shape="color: #d0a73a; size: 0.7" falling-leaf="speed: 0.28; sway: 0.21; phase: 4.0" position="3.7 0.8 -2.7" rotation="0 0 18"></a-entity>
+    </a-entity>
+
+    <a-entity id="camera" camera="active: true; fov: 44" look-controls="enabled: false" wasd-controls="enabled: false" scene-layout position="0 1.5 10"></a-entity>
+  </a-scene>
+</body>
+</html>
